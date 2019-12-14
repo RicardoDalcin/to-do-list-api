@@ -1,4 +1,5 @@
 src/config/auth.json
+src/config/mail.json
 
 # Logs
 logs

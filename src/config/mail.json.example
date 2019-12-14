@@ -1,0 +1,6 @@
+{
+  "host": "YOUR MAILER HOST",
+  "port": YOUR MAILER PORT,
+  "user": "USER",
+  "pass": "PASS"
+}
