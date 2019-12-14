@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/to-do-list', { useMongoClient: true })
+mongoose.connect('mongodb://localhost/to-do-list', { useUnifiedTopology: true, useNewUrlParser: true })
 mongoose.Promise = global.Promise
 
 module.exports = mongoose

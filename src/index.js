@@ -8,6 +8,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 require('./controllers/authController')(app)
 
-app.listen(3000, () => {
-  console.log('Listening on port 3000')
+app.listen(3001, () => {
+  console.log('Listening on port 3001')
 })
