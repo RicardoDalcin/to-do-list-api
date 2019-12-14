@@ -6,8 +6,8 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-require('./controllers/authController')(app)
-require('./controllers/taskController')(app)
+require('./app/controllers/authController')(app)
+require('./app/controllers/taskController')(app)
 
 app.listen(3001, () => {
   console.log('Listening on port 3001')
