@@ -42,17 +42,21 @@ router.post('/register', async (req, res) => {
 router.post('/authenticate', async (req, res) => {
   const { login, password } = req.body
 
-  const user = await User.findOne({ $or: [{ 'email': login }, { 'username': login }] }).select('+password')
+  try {
+    const user = await User.findOne({ $or: [{ 'email': login }, { 'username': login }] }).select('+password')
 
-  if (!user)
-    return res.status(400).send({ error: 'Oops... user was not found!' })
+    if (!user)
+      return res.status(400).send({ error: 'Oops... user was not found!' })
 
-  if (!await bcrypt.compare(password, user.password))
-    return res.status(401).send({ error: 'The username or pasword provided is invalid!' })
+    if (!await bcrypt.compare(password, user.password))
+      return res.status(401).send({ error: 'The username or pasword provided is invalid!' })
 
-  user.password = undefined
+    user.password = undefined
 
-  res.send({ token: generateToken({ id: user.id }) })
+    res.send({ token: generateToken({ id: user.id }) })
+  } catch (err) {
+    res.status(400).send({ error: 'An error ocurred trying to authenticate user, please try again later!' })
+  }
 
 })
 
@@ -84,7 +88,6 @@ router.post('/forgot-password', async (req, res) => {
       context: { token }
     }, (err) => {
       if (err) {
-        console.log(err)
         return res.status(400).send({ error: 'An error ocurred trying to send password recovery email!' })
       }
 
@@ -93,8 +96,35 @@ router.post('/forgot-password', async (req, res) => {
     })
 
   } catch (err) {
-    console.log(err)
     res.status(400).send({ error: 'An error ocurred, please try again!' })
+  }
+})
+
+router.post('/reset-password', async (req, res) => {
+  const { login, token, password } = req.body
+
+  try {
+    const user = await User.findOne({ $or: [{ 'email': login }, { 'username': login }] }).select('+passwordResetToken passwordResetExpires')
+
+    if (!user)
+      return res.status(400).send({ error: 'Oops... user was not found!' })
+
+    if (token !== user.passwordResetToken)
+      return res.status(400).send({ error: 'The password reset token you provided is invalid!' })
+
+    const now = new Date()
+
+    if (now > user.passwordResetExpires)
+      res.status(400).send({ error: 'It seems like your password reset token expired, please generate a new one to continue!' })
+
+    user.password = password
+
+    await user.save()
+
+    res.send()
+
+  } catch (err) {
+    res.status(400).send({ error: 'Sorry, we could not reset your password, please try again later!' })
   }
 })
 
