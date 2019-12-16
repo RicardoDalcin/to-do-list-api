@@ -1,7 +1,6 @@
 const express = require('express')
 const authMiddleware = require('../middlewares/auth')
 const Project = require('../models/project')
-const Task = require('../models/task')
 
 const router = express.Router()
 
@@ -40,7 +39,7 @@ router.put('/:projectId', async (req, res) => {
     const project = await Project.findByIdAndUpdate(req.params.projectId, {...req.body}, { new: true })
     return res.send({ project })
   } catch (err) {
-    return res.status(400).send({ error: 'An error ocurred trying to find projects, please try again later!'})
+    return res.status(400).send({ error: 'An error ocurred trying to edit project, please try again later!'})
   }
 })
 
