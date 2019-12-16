@@ -21,7 +21,7 @@ router.get('/:projectId', async (req, res) => {
     const project = await Project.findById(req.params.projectId)
     return res.send({ project })
   } catch (err) {
-    return res.status(400).send({ error: 'An error ocurred trying to find projects, please try again later!'})
+    return res.status(400).send({ error: 'An error ocurred trying to find project, please try again later!'})
   }
 })
 
@@ -36,11 +36,21 @@ router.post('/', async (req, res) => {
 })
 
 router.put('/:projectId', async (req, res) => {
-  return res.send({ ok: true })
+  try {
+    const project = await Project.findByIdAndUpdate(req.params.projectId, {...req.body}, { new: true })
+    return res.send({ project })
+  } catch (err) {
+    return res.status(400).send({ error: 'An error ocurred trying to find projects, please try again later!'})
+  }
 })
 
 router.delete('/:projectId', async (req, res) => {
-  return res.send({ ok: true })
+  try {
+    await Project.findByIdAndRemove(req.params.projectId)
+    return res.send({ message: 'Project was successfully deleted!' })
+  } catch (err) {
+    return res.status(400).send({ error: 'An error ocurred trying to delete project, please try again later!'})
+  }
 })
 
 module.exports = app => app.use('/projects', router)
