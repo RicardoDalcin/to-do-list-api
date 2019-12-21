@@ -12,7 +12,7 @@ const router = express.Router()
 
 const generateToken = (params = {}) => {
 	return jwt.sign(params, authConfig.secret, {
-		expiresIn: 86400
+		expiresIn: 86400000
 	})
 }
 
@@ -26,19 +26,15 @@ router.post('/register', async (req, res) => {
 				.send({ error: 'Please fill in all the required fields!' })
 		}
 		if (await User.findOne({ email }))
-			return res
-				.status(400)
-				.send({
-					error:
-						'Sorry, this email was already chosen. Please choose another one!'
-				})
+			return res.status(400).send({
+				error:
+					'Sorry, this email was already chosen. Please choose another one!'
+			})
 		if (await User.findOne({ username }))
-			return res
-				.status(400)
-				.send({
-					error:
-						'Sorry, this username was already chosen. Please choose another one!'
-				})
+			return res.status(400).send({
+				error:
+					'Sorry, this username was already chosen. Please choose another one!'
+			})
 
 		const user = await User.create(req.body)
 
@@ -75,12 +71,10 @@ router.post('/authenticate', async (req, res) => {
 
 		res.send({ token: generateToken({ id: user.id }) })
 	} catch (err) {
-		res
-			.status(400)
-			.send({
-				error:
-					'An error ocurred trying to authenticate user, please try again later!'
-			})
+		res.status(400).send({
+			error:
+				'An error ocurred trying to authenticate user, please try again later!'
+		})
 	}
 })
 
@@ -116,11 +110,9 @@ router.post('/forgot-password', async (req, res) => {
 			},
 			err => {
 				if (err) {
-					return res
-						.status(400)
-						.send({
-							error: 'An error ocurred trying to send password recovery email!'
-						})
+					return res.status(400).send({
+						error: 'An error ocurred trying to send password recovery email!'
+					})
 				}
 
 				return res.send({ message: 'Password recovery email was submited!' })
@@ -150,12 +142,10 @@ router.post('/reset-password', async (req, res) => {
 		const now = new Date()
 
 		if (now > user.passwordResetExpires)
-			res
-				.status(400)
-				.send({
-					error:
-						'It seems like your password reset token expired, please generate a new one to continue!'
-				})
+			res.status(400).send({
+				error:
+					'It seems like your password reset token expired, please generate a new one to continue!'
+			})
 
 		user.password = password
 
@@ -163,12 +153,9 @@ router.post('/reset-password', async (req, res) => {
 
 		res.send()
 	} catch (err) {
-		res
-			.status(400)
-			.send({
-				error:
-					'Sorry, we could not reset your password, please try again later!'
-			})
+		res.status(400).send({
+			error: 'Sorry, we could not reset your password, please try again later!'
+		})
 	}
 })
 
