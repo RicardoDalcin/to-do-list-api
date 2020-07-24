@@ -22,7 +22,7 @@ Just run the following command inside the folder and you'll be good to go:
 npm run dev
 ```
 
-If you'll be using this API along with the React Native app, you can use Ngrok to make HTTP requests:
+If you'll be using this API along with the React Native app, you can use Ngrok to open the port for external HTTP requests:
 
 ```node
 npm install -g ngrok
